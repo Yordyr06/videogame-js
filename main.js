@@ -14,7 +14,10 @@ const position = {
   y: undefined,
 };
 
-
+const goal = {
+  x: undefined,
+  y: undefined,
+}
 
 window.addEventListener('load', startGame);
 window.addEventListener('resize', setCanvasSize);
@@ -63,6 +66,9 @@ function startGame() {
           position.x = x;
           position.y = y;
         }
+      } else if (col == "I") {
+        goal.x = x;
+        goal.y = y;
       }
       
       game.fillText(emoji, x, y);
@@ -74,6 +80,14 @@ function startGame() {
 
 
 function movePlayer() {
+  const goalCollisionX = position.x.toFixed(5) == goal.x.toFixed(5);
+  const goalCollisionY = position.y.toFixed(5) == goal.y.toFixed(5);
+  const goalCollision = goalCollisionX && goalCollisionY;
+
+  if (goalCollision) {
+    console.log('Nivel Superado!');
+  }
+
   game.fillText(emojis['PLAYER'], position.x, position.y);
 }
 
