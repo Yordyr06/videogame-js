@@ -9,6 +9,10 @@ let btnDown = document.getElementById('down');
 let canvasSize;
 let elementsSize;
 
+const position = {
+  x: undefined,
+  y: undefined,
+};
 
 
 
@@ -47,16 +51,31 @@ function startGame() {
   const mapRows = map.trim().split('\n');
   const mapCols = mapRows.map(row => row.trim().split(''));
 
+  game.clearRect(0,0,canvasSize,canvasSize);
   mapCols.forEach((row, rowI) => {
     row.forEach((col, colI) => {
       const emoji = emojis[col];
       const x = elementsSize * (colI + 1);
       const y = elementsSize * (rowI + 1);
+      
+      if (col == 'O') {
+        if (!position.x && !position.y) {
+          position.x = x;
+          position.y = y;
+        }
+      }
+      
       game.fillText(emoji, x, y);
     });
   });
+
+  movePlayer();
 };
 
+
+function movePlayer() {
+  game.fillText(emojis['PLAYER'], position.x, position.y);
+}
 
 function move(event) {
   if (event.key == 'ArrowUp') moveUp();
@@ -66,17 +85,37 @@ function move(event) {
 }
 
 function moveUp() {
-  console.log('Me quiero jondia parriba');
+  if ((position.y - elementsSize) < elementsSize) {
+    console.log('OUT')
+  } else {
+    position.y -= elementsSize;
+    startGame();
+  }
 }
 
-function moveLeft() { 
-  console.log('Me quiero jondia pa la iquielda');
+function moveLeft() {
+  if ((position.x - elementsSize) < elementsSize) {
+    console.log('OUT')
+  } else {  
+  position.x -= elementsSize;
+  startGame();
+  }
 }
 
 function moveRight() {
-  console.log('Me quiero jondia pa la derecha');
+  if ((position.x + elementsSize) > canvasSize) {
+    console.log('OUT')
+  } else {
+  position.x += elementsSize;
+  startGame();
+  }
 }
 
 function moveDown() {
-  console.log('Me quiero jondia pabajo');
+  if ((position.y + elementsSize) > canvasSize) {
+    console.log('OUT')
+  } else {
+  position.y += elementsSize;
+  startGame();
+  }
 }
