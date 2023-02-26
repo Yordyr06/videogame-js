@@ -19,6 +19,8 @@ const goal = {
   y: undefined,
 }
 
+let enemies = [];
+
 window.addEventListener('load', startGame);
 window.addEventListener('resize', setCanvasSize);
 
@@ -69,6 +71,11 @@ function startGame() {
       } else if (col == "I") {
         goal.x = x;
         goal.y = y;
+      } else if (col == 'X') {
+        enemies.push({
+          x: x,
+          y: y,
+        });
       }
       
       game.fillText(emoji, x, y);
@@ -84,9 +91,15 @@ function movePlayer() {
   const goalCollisionY = position.y.toFixed(5) == goal.y.toFixed(5);
   const goalCollision = goalCollisionX && goalCollisionY;
 
-  if (goalCollision) {
-    console.log('Nivel Superado!');
-  }
+  const enemyCollision = enemies.find(enemy => {
+    const enemyCollisionX = position.x.toFixed(5) == enemy.x.toFixed(5);
+    const enemyCollisionY = position.y.toFixed(5) == enemy.y.toFixed(5);
+    return enemyCollisionX && enemyCollisionY;
+  });
+
+  if (goalCollision) console.log('Nivel Superado!');
+  if (enemyCollision) console.log('Chocaste con una bomba!');
+
 
   game.fillText(emojis['PLAYER'], position.x, position.y);
 }
