@@ -5,11 +5,16 @@ const btnLeft = document.getElementById('left');
 const btnRight = document.getElementById('right');
 const btnDown = document.getElementById('down');
 const spanHearts = document.getElementById('hearts');
+const spanTime = document.getElementById('time');
 
 let canvasSize;
 let elementsSize;
 let level = 0;
 let hearts = 3;
+
+let timeStart;
+let timePlayer;
+let timeInterval;
 
 const position = {
   x: undefined,
@@ -58,6 +63,11 @@ function startGame() {
 
   if (!map) {
     return win();
+  }
+
+  if (!timeStart) {
+    timeStart = Date.now();
+    timeInterval = setInterval(showTime, 1000);
   }
 
   const mapRows = map.trim().split('\n');
@@ -148,6 +158,7 @@ function moveDown() {
 
 function win() {
   console.log('Felicidades, terminaste el juego!!');
+  clearInterval(timeInterval);
 }
 
 function levelWin() {
@@ -157,8 +168,8 @@ function levelWin() {
 }
 
 function levelFail() {
-  hearts --;
   console.log('Chocaste con una bomba!');
+  hearts --;
   
   position.x = undefined;
   position.y = undefined;
@@ -166,14 +177,21 @@ function levelFail() {
   if (hearts <= 0) {
     level = 0;
     hearts = 3;
+    timeStart = undefined;
   }
   
   startGame();
 }
+
+
 
 function showHearts() {
   const heartsArr = Array(hearts).fill(emojis['HEART']);
   spanHearts.innerHTML = '';
   
   heartsArr.forEach(heart => spanHearts.append(heart));
+}
+
+function showTime() {
+  spanTime.innerHTML = Date.now() - timeStart;
 }
