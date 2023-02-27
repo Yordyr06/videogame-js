@@ -1,14 +1,15 @@
 const canvas = document.getElementById('game');
 const game = canvas.getContext('2d');
-
-let btnUp = document.getElementById('up');
-let btnLeft = document.getElementById('left');
-let btnRight = document.getElementById('right');
-let btnDown = document.getElementById('down');
+const btnUp = document.getElementById('up');
+const btnLeft = document.getElementById('left');
+const btnRight = document.getElementById('right');
+const btnDown = document.getElementById('down');
+const spanHearts = document.getElementById('hearts');
 
 let canvasSize;
 let elementsSize;
 let level = 0;
+let hearts = 3;
 
 const position = {
   x: undefined,
@@ -62,6 +63,8 @@ function startGame() {
   const mapRows = map.trim().split('\n');
   const mapCols = mapRows.map(row => row.trim().split(''));
 
+  showHearts();
+
   enemies = [];
   game.clearRect(0,0,canvasSize,canvasSize);
 
@@ -95,30 +98,14 @@ function startGame() {
 
 
 
-function win() {
-  console.log('Felicidades, terminaste el juego!!');
-}
-
-function levelWin() {
-  console.log('Nivel Superado!');
-  level ++;
-  startGame();
-}
-
-function levelFail() {
-  console.log('Chocaste con una bomba!');
-}
-
-
-
 function movePlayer() {
   const goalCollisionX = position.x.toFixed(3) == goal.x.toFixed(3);
   const goalCollisionY = position.y.toFixed(3) == goal.y.toFixed(3);
   const goalCollision = goalCollisionX && goalCollisionY;
 
   const enemyCollision = enemies.find(enemy => {
-    const enemyCollisionX = position.x.toFixed(5) == enemy.x.toFixed(5);
-    const enemyCollisionY = position.y.toFixed(5) == enemy.y.toFixed(5);
+    const enemyCollisionX = position.x.toFixed(3) == enemy.x.toFixed(3);
+    const enemyCollisionY = position.y.toFixed(3) == enemy.y.toFixed(3);
     return enemyCollisionX && enemyCollisionY;
   });
 
@@ -157,3 +144,36 @@ function moveDown() {
   else position.y += elementsSize, startGame();
 }
 
+
+
+function win() {
+  console.log('Felicidades, terminaste el juego!!');
+}
+
+function levelWin() {
+  console.log('Nivel Superado!');
+  level ++;
+  startGame();
+}
+
+function levelFail() {
+  hearts --;
+  console.log('Chocaste con una bomba!');
+  
+  position.x = undefined;
+  position.y = undefined;
+  
+  if (hearts <= 0) {
+    level = 0;
+    hearts = 3;
+  }
+  
+  startGame();
+}
+
+function showHearts() {
+  const heartsArr = Array(hearts).fill(emojis['HEART']);
+  spanHearts.innerHTML = '';
+  
+  heartsArr.forEach(heart => spanHearts.append(heart));
+}
