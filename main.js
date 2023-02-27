@@ -8,6 +8,7 @@ let btnDown = document.getElementById('down');
 
 let canvasSize;
 let elementsSize;
+let level = 0;
 
 const position = {
   x: undefined,
@@ -49,14 +50,21 @@ function setCanvasSize() {
 
 
 function startGame() {
+  const map = maps[level];
+
   game.font = elementsSize + 'px Verdana';
   game.textAlign = 'end';
-  
-  const map = maps[0];
+
+  if (!map) {
+    return win();
+  }
+
   const mapRows = map.trim().split('\n');
   const mapCols = mapRows.map(row => row.trim().split(''));
 
+  enemies = [];
   game.clearRect(0,0,canvasSize,canvasSize);
+
   mapCols.forEach((row, rowI) => {
     row.forEach((col, colI) => {
       const emoji = emojis[col];
@@ -86,9 +94,26 @@ function startGame() {
 };
 
 
+
+function win() {
+  console.log('Felicidades, terminaste el juego!!');
+}
+
+function levelWin() {
+  console.log('Nivel Superado!');
+  level ++;
+  startGame();
+}
+
+function levelFail() {
+  console.log('Chocaste con una bomba!');
+}
+
+
+
 function movePlayer() {
-  const goalCollisionX = position.x.toFixed(5) == goal.x.toFixed(5);
-  const goalCollisionY = position.y.toFixed(5) == goal.y.toFixed(5);
+  const goalCollisionX = position.x.toFixed(3) == goal.x.toFixed(3);
+  const goalCollisionY = position.y.toFixed(3) == goal.y.toFixed(3);
   const goalCollision = goalCollisionX && goalCollisionY;
 
   const enemyCollision = enemies.find(enemy => {
@@ -97,8 +122,8 @@ function movePlayer() {
     return enemyCollisionX && enemyCollisionY;
   });
 
-  if (goalCollision) console.log('Nivel Superado!');
-  if (enemyCollision) console.log('Chocaste con una bomba!');
+  // if (goalCollision) levelWin();
+  // if (enemyCollision) levelFail();
 
 
   game.fillText(emojis['PLAYER'], position.x, position.y);
@@ -112,37 +137,23 @@ function move(event) {
 }
 
 function moveUp() {
-  if ((position.y - elementsSize) < elementsSize) {
-    console.log('OUT')
-  } else {
-    position.y -= elementsSize;
-    startGame();
-  }
+  if ((position.y - elementsSize) < elementsSize) console.log('OUT');
+  else position.y -= elementsSize, startGame();
 }
 
 function moveLeft() {
-  if ((position.x - elementsSize) < elementsSize) {
-    console.log('OUT')
-  } else {  
-  position.x -= elementsSize;
-  startGame();
-  }
+  if ((position.x - elementsSize) < elementsSize) console.log('OUT');
+  else position.x -= elementsSize, startGame();
 }
 
 function moveRight() {
-  if ((position.x + elementsSize) > canvasSize) {
-    console.log('OUT')
-  } else {
-  position.x += elementsSize;
-  startGame();
-  }
+  if ((position.x + elementsSize) > canvasSize) console.log('OUT');
+  else  position.x += elementsSize, startGame();
+  
 }
 
 function moveDown() {
-  if ((position.y + elementsSize) > canvasSize) {
-    console.log('OUT')
-  } else {
-  position.y += elementsSize;
-  startGame();
-  }
+  if ((position.y + elementsSize) > canvasSize) console.log('OUT');
+  else position.y += elementsSize, startGame();
 }
+
